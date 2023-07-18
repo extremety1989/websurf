@@ -29,11 +29,14 @@ function mousedown (e) {
 }
 
 
-const matrix = ref([[0]])
+const matrix = ref([])
 const vertex = ref([])
 vertex.value.push({x: window.innerWidth / 2, y: window.innerHeight / 2}) 
 
 function add() {
+    if(!matrix.value[0]){
+        matrix.value[0] = []
+    }
     matrix.value[0].push(0)
     const j = matrix.value[0].length
     for(let i = 1; i < j; i++){
@@ -73,7 +76,7 @@ function displayMatrix() {
   console.table(matrix.value)
 }
 
-const number_of_nodes = 4
+const number_of_nodes = 5
 for (let i = 0; i < number_of_nodes; i++) {
       add()
 }
