@@ -3,7 +3,7 @@ import WebSurf from './components/WebSurf.vue'
 </script>
 
 <template>
-  <WebSurf msg="Vite + Vue" />
+  <WebSurf />
 </template>
 
 <style scoped></style>
