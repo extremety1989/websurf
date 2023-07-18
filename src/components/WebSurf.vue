@@ -27,7 +27,7 @@ function mousedown (e) {
     window.removeEventListener('mouseup', mouseup)
   }
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const matrix = ref([])
 const vertex = ref([])
@@ -60,7 +60,7 @@ function remove(index) {
 
 function mark(i, j) {
   if(matrix.value[i][j] === 1){
-      alert(`Doublicate connection (${i},${j}) of (${j},${i})`)
+      alert(`Duplicate connection (${i},${j}) of (${j},${i})`)
   }else{
     matrix.value[i][j] = 1
     matrix.value[j][i] = 1
