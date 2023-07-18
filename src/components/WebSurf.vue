@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from 'vue'
 
+// copied from https://www.w3schools.com/tags/canvas_arc.asp
+const canvas = document.getElementsByClassName("canvas");
+const ctx = canvas.getContext("2d");
+///////////////////////////////////////////////////////////////////
 const table = ref("")
 
 // copied from 
@@ -30,14 +34,19 @@ function mousedown (e) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const matrix = ref([])
-const vertex = ref([])
-vertex.value.push({x: window.innerWidth / 2, y: window.innerHeight / 2}) 
+const nodes = ref([])
 
-function add() {
+
+function add(x, y) {
     if(!matrix.value[0]){
         matrix.value[0] = []
     }
     matrix.value[0].push(0)
+    nodes.value.push({x: x, y: y}) 
+    ctx.beginPath();
+    ctx.arc(x, y, 50, 0, 2 * Math.PI);
+    ctx.fillStyle = "orange";
+    ctx.fill(); 
     const j = matrix.value[0].length
     for(let i = 1; i < j; i++){
       if(!matrix.value[i]){
@@ -78,7 +87,7 @@ function displayMatrix() {
 
 const number_of_nodes = 5
 for (let i = 0; i < number_of_nodes; i++) {
-      add()
+      add(i+1, y+1)
 }
 
 mark(0, 1)
@@ -90,16 +99,13 @@ mark(2, 3)
 mark(3, 4)
 
 displayMatrix()
+
+
+
 </script>
 
 <template>
-
-    <table v-for="line in matrix">
-      <td style="padding-left: 50px;" v-for="cell in line">
-        {{cell}}
-      </td>
-    </table>
-
+<canvas></canvas>
 </template>
 
 <style scoped>
