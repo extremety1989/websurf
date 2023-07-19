@@ -1,22 +1,19 @@
 <script setup>
+
   import { ref, onMounted } from 'vue'
-  import { Network } from 'vis-network';
-  import { DataSet } from 'vis-data'
-  const table = ref("")
-  const canvas = ref(null);
+  import BottomNavbar from '../components/BottomNavbar.vue'
+  let canvas = document.getElementById("canvas")
+  const ctx = ref(null);
   const matrix = ref([])
-  const network = ref(null)
   const edges = ref([])
   const nodes = ref([])
-
-  const nodes_data = ref([])
-  const edges_data = ref([])
-
-  const holding_shift = ref(false)
   const current_selected = ref(-1)
 
   onMounted(() => {
-    console.log(canvas);
+    ctx.value = canvas.getContext("2d")
+    ctx.value.beginPath();
+    ctx.value.rect(20, 20, 150, 100);
+    ctx.value.stroke();
     displayGraph()
   })
 
@@ -99,19 +96,19 @@
 </script>
 
 <template>
-  <canvas ref="canvas"></canvas>
-  <span v-if="current_selected !== -1" id="current_selected">{{ current_selected }}</span>
+  <div class="container-fluid">
+    <canvas id="canvas" ref="canvas"></canvas>
+    <BottomNavbar />
+  </div>
+
 </template>
 
 <style scoped>
   #canvas {
+    width: 100%;
+    height: 764px;
+    background-color: red;
     z-index: 0;
   }
 
-  #current_selected {
-    position: absolute;
-    padding: 50px;
-    bottom: 0;
-    z-index: 100;
-  }
 </style>
