@@ -6,4 +6,7 @@ import WebSurf from './components/WebSurf.vue'
   <WebSurf />
 </template>
 
-<style scoped></style>
+<style scoped>
+  
+
+</style>
