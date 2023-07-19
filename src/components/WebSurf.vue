@@ -3,38 +3,21 @@
   import { Network } from 'vis-network';
   import { DataSet } from 'vis-data'
   const table = ref("")
-  const container = ref(null);
+  const canvas = ref(null);
   const matrix = ref([])
   const network = ref(null)
   const edges = ref([])
   const nodes = ref([])
-  
+
   const nodes_data = ref([])
   const edges_data = ref([])
 
+  const holding_shift = ref(false)
   const current_selected = ref(-1)
 
   onMounted(() => {
-
-
-    // mark(0, 1)
-    // mark(0, 4)
-    // mark(1, 2)
-    // mark(1, 3)
-    // mark(1, 4)
-    // mark(2, 3)
-    // mark(3, 4)
-   
-
-    const canvas = document.getElementsByTagName("canvas")
- 
-
-    window.addEventListener("keydown", (event) => {
-          if(event.key === "a" || event.key === "A"){
-            add()
-            displayGraph()
-          }
-        })
+    console.log(canvas);
+    displayGraph()
   })
 
 
@@ -62,22 +45,14 @@
       window.removeEventListener('mouseup', mouseup)
     }
   }
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+ 
   function add() {
+
     if (!matrix.value[0]) {
       matrix.value[0] = []
     }
     matrix.value[0].push(0)
-    const j = matrix.value[0].length
-    nodes_data.value = []
-    for (let i = 0; i < j; i++) {
-         nodes_data.value.push({id: i, label: `${i}`})
-    }
-    //////////////////////////////////////////////////////////////////
-
-    for (let i = 1; i < j; i++) {
+    for (let i = 1; i < matrix.value[0].length; i++) {
       if (!matrix.value[i]) {
         matrix.value[i] = []
       }
@@ -88,19 +63,22 @@
   }
 
   function remove(index) {
-    if (matrix.value[0].length === 1) return
-    for (let i = 0; i < matrix.value[0].length; i++) {
+    if (!matrix.value[0] || matrix.value[0].length === 0) {
+      console.log("empty matrix");
+      return
+    }
+    for (let i = 0; i < matrix.value[0].length + 1; i++) {
       matrix.value[i].splice(index, 1);
     }
     matrix.value = matrix.value.slice(0)
     matrix.value.splice(index, 1)
+    current_selected.value = -1
   }
 
   function mark(i, j) {
     if (matrix.value[i][j] === 1) {
-      alert(`Duplicate connection (${i},${j}) of (${j},${i})`)
+      console.log(`Duplicate connection (${i},${j}) of (${j},${i})`)
     } else {
-      edges_data.value.push({from: i, to: j})
       matrix.value[i][j] = 1
       matrix.value[j][i] = 1
     }
@@ -112,83 +90,28 @@
   }
 
   function displayGraph() {
-    
+
     // only for debugging, it is performance heavy
     console.table(JSON.parse(JSON.stringify(matrix.value)))
-   
-    nodes.value = new DataSet(nodes_data.value)
-    edges.value = new DataSet(edges_data.value)
-    const datas = {
-      nodes: nodes.value,
-      edges: edges.value,
-    };  
-
-
-    const locales = {
-      en: {
-        edit: 'Edit',
-        del: 'Delete selected',
-        back: 'Back',
-        addNode: 'Add Node',
-        addEdge: 'Add Edge',
-        editNode: 'Edit Node',
-        editEdge: 'Edit Edge',
-        addDescription: 'Click in an empty space to place a new node.',
-        edgeDescription: 'Click on a node and drag the edge to another node to connect them.',
-        editEdgeDescription: 'Click on the control points and drag them to a node to connect to it.',
-        createEdgeError: 'Cannot link edges to a cluster.',
-        deleteClusterError: 'Clusters cannot be deleted.',
-        editClusterError: 'Clusters cannot be edited.'
-      }
-    }
-        const options = {
-          autoResize: true,
-          height: '100%',
-          width: '100%',
-          clickToUse: true,
-          locale: "en",
-          locales: locales,
-          configure: {
-            enabled: false,
-            filter: 'nodes,edges',
-            container: container.value,
-            showButton: true
-          }
-        };
-        network.value = new Network(container.value, datas, options);
-        network.value.on("doubleClick", (event)=>{
-          if(event.edges.length > 0){
-            edges.value.remove(event.edges[0])
-          }else if(event.nodes.length > 0){
-            nodes.value.remove(event.nodes[0])
-            remove(event.nodes[0])
-          }
-        })
-        network.value.on('selectEdge', function(event){
-          console.log(event.edges[0]);
-        });
-        network.value.on('selectNode', function(event){
-          current_selected.value = event.nodes[0]
-          console.log(event.nodes[0]);
-        });
-      
   }
+
 
 </script>
 
 <template>
-  <div ref="container" id="container"></div>
+  <canvas ref="canvas"></canvas>
   <span v-if="current_selected !== -1" id="current_selected">{{ current_selected }}</span>
 </template>
 
 <style scoped>
- #container {
+  #canvas {
     z-index: 0;
- }
- #current_selected {
-   position: absolute;
-   padding: 50px;
-   bottom: 0;
-   z-index: 100;
- }
+  }
+
+  #current_selected {
+    position: absolute;
+    padding: 50px;
+    bottom: 0;
+    z-index: 100;
+  }
 </style>
