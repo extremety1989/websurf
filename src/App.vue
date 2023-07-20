@@ -21,8 +21,3 @@ const currentView = computed(() => {
   <TopNavbar />
   <component :is="currentView" />
 </template>
-
-<style scoped>
-  
-
-</style>

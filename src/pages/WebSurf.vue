@@ -1,18 +1,21 @@
 <script setup>
 
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import BottomNavbar from '../components/BottomNavbar.vue'
   let canvas = document.getElementById("canvas")
+
   const ctx = ref(null);
   const matrix = ref([])
   const edges = ref([])
   const nodes = ref([])
-  const current_selected = ref(-1)
+  const isSelected = ref(-1)
 
   onMounted(() => {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight - 65
     ctx.value = canvas.getContext("2d")
     ctx.value.beginPath();
-    ctx.value.rect(20, 20, 150, 100);
+    ctx.value.rect(1600, 20, 150, 100);
     ctx.value.stroke();
     displayGraph()
   })
@@ -69,7 +72,7 @@
     }
     matrix.value = matrix.value.slice(0)
     matrix.value.splice(index, 1)
-    current_selected.value = -1
+    isSelected.value = -1
   }
 
   function mark(i, j) {
@@ -90,25 +93,15 @@
 
     // only for debugging, it is performance heavy
     console.table(JSON.parse(JSON.stringify(matrix.value)))
-  }
 
+  }
+function selectedActionGraph(id) {
+  isSelected.value = id
+}
 
 </script>
 
 <template>
-  <div class="container-fluid">
-    <canvas id="canvas" ref="canvas"></canvas>
-    <BottomNavbar />
-  </div>
-
+    <canvas class="bg-slate-50" id="canvas" ref="canvas"></canvas>
+    <BottomNavbar @drag="drag" @selected="selectedActionGraph" draggable="true" />
 </template>
-
-<style scoped>
-  #canvas {
-    width: 100%;
-    height: 764px;
-    background-color: red;
-    z-index: 0;
-  }
-
-</style>
